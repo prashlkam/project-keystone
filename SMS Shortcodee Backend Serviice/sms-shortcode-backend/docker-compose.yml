@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/smsdb
+      - REDIS_URL=redis://redis:6379
+      - SMS_GATEWAY=twilio
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_FROM=${TWILIO_FROM}
+      - GATEWAY_OUTBOUND_URL=${GATEWAY_OUTBOUND_URL}
+      - GATEWAY_API_KEY=${GATEWAY_API_KEY}
+      - WEBHOOK_SECRET=localsecret
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+      - redis
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: smsdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+  redis:
+    image: redis:7
+    ports:
+      - '6379:6379'
